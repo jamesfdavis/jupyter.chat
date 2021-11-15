@@ -4,7 +4,6 @@ import { create as shell } from './Shell'
 
 /**
  * Robot receives messages from a source and dispatch to matching listeners
- * @constructor
  */
 class Robot {
 
