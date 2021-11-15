@@ -1,0 +1,32 @@
+{
+  "name": "jupyter.chat",
+  "version": "1.0.0",
+  "description": "Jupyter ChatBot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.ts",
+    "help": "ts-node index.ts --help"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesfdavis/jupyter.chat.git"
+  },
+  "keywords": [
+    "Chat"
+  ],
+  "author": "James Davis <ragingsmurf@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jamesfdavis/jupyter.chat/issues"
+  },
+  "homepage": "https://github.com/jamesfdavis/jupyter.chat#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.4.0"
+  },
+  "dependencies": {
+    "@types/yargs": "^17.0.5",
+    "yargs": "^17.2.1"
+  }
+}
