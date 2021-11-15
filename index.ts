@@ -1,21 +1,28 @@
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers';
+// import yargs from 'yargs'
+// import { hideBin } from 'yargs/helpers';
 
-yargs(hideBin(process.argv))
-  .command('serve [port]', 'start the server', (yargs) => {
-    return yargs
-      .positional('port', {
-        describe: 'port to bind on',
-        default: 5000
-      })
-  }, (argv) => {
-    if (argv.verbose) console.info(`start server on :${argv.port}`)
-    console.log(argv.port)
-  })
-  .option('verbose', {
-    alias: 'v',
-    type: 'boolean',
-    description: 'Run with verbose logging'
-  })
-  .parse()
+import { Robot } from './src/Robot'
+
+// yargs(hideBin(process.argv))
+//   .command('serve [port]', 'start the server', (yargs) => {
+//     return yargs
+//       .positional('port', {
+//         describe: 'port to bind on',
+//         default: 5000
+//       })
+//   }, (argv) => {
+//     if (argv.verbose) console.info(`start server on :${argv.port}`)
+//     console.log(argv.port)
+//   })
+//   .option('verbose', {
+//     alias: 'v',
+//     type: 'boolean',
+//     description: 'Run with verbose logging'
+//   })
+//   .parse()
+
+// yargs()
+
+let r = new Robot();
+console.log(r);
 

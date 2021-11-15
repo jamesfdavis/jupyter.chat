@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "@types/yargs": "^17.0.5",
+    "chalk": "^4.1.2",
+    "cline": "^0.8.2",
     "yargs": "^17.2.1"
   }
 }
