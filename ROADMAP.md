@@ -10,7 +10,8 @@ This roadmap represents some of the priorities for the project over the next few
 - [ ] Estalbish workflow for message processing - Send and reply to basic messages via Shell.
 
 ## Establish testing suite.
-- [ ] Add JavaScript Linter and fix/refactor all files as needed.
+- [x] Add JavaScript Linter and fix/refactor all files as needed.
+- [ ] Implement Mocha tests against Bot Shell instance.
 
 ## Generate example worflows.
 
