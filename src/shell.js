@@ -1,55 +1,48 @@
-'use strict'
-
 import * as fs from 'fs';
 import * as readline from 'readline';
-import * as Stream from 'stream';
-let cline = require('cline')
-import * as chalk from 'chalk'
-
-
-// const cline = require('cline')
-// const chalk = require('chalk')
-
-import { Adapter } from './Adapter'
-
-import * as  _require from './Message'
+import { Duplex } from 'stream';
+import * as chalk from 'chalk';
+import cline from 'cline'
+import log from 'log'
+import * as  _require from './message.js';
+import { Adapter } from './adapter.js'
 
 const TextMessage = _require.TextMessage
-
 const historySize = 1024
-
-const historyPath = '.hubot_history'
+const historyPath = '.shell_history'
 
 class Shell extends Adapter {
 
-  cli: any;
+  cli;
+  log;
 
-  send(envelope: any[]) {
+  send(envelope) {
     const strings = [].slice.call(arguments, 1)
     Array.from(strings).forEach(str => console.log(chalk.bold(`${str}`)))
   }
 
-  emote(envelope: any) {
+  emote(envelope) {
     const strings = [].slice.call(arguments, 1)
     Array.from(strings).map(str => this.send(envelope))
   }
 
-  reply(envelope: any[]) {
+  reply(envelope) {
     // const strings = [].slice.call(arguments, 1).map((s) => `${s}`)
     // this.send.apply(this, [envelope].concat(strings))
   }
 
   run() {
-    this.buildCli()
+    this.buildCli();
 
-    loadHistory((error: any, history: any) => {
+    loadHistory((error, history) => {
       if (error) {
-        console.log(error.message)
-      }
+        console.log(error.message);
+      } else {
+        this.cli.history(history);
 
-      this.cli.history(history)
-      this.cli.interact(`${this.robot.name}> `)
-      return this.emit('connected')
+      }
+      this.cli.interact(`${this.robot.name}> `);
+      return this.emit('connected');
     })
   }
 
@@ -61,14 +54,9 @@ class Shell extends Adapter {
   buildCli() {
     this.cli = cline()
 
-    this.cli.command('*', 'desc', 'args', (input: any) => {
-      let userId: any = process.env.HUBOT_SHELL_USER_ID || 1
-      if (userId.match(/A\d+z/)) {
-        userId = parseInt(userId)
-      }
-
-      const userName = process.env.HUBOT_SHELL_USER_NAME || 'Shell'
-      const user = this.robot.brain.userForId(userId, { name: userName, room: 'Shell' })
+    this.cli.command('*', input => {
+      const userName = process.env.JUPYTER_SHELL_USER_NAME || 'Shell'
+      let user = { name: "User", room: "Shell" }
       this.receive(new TextMessage(user, input, 'messageId'))
     })
 
@@ -76,7 +64,7 @@ class Shell extends Adapter {
       Array.from(this.cli.history()).map(item => console.log(item))
     })
 
-    this.cli.on('history', (item: any) => {
+    this.cli.on('history', (item) => {
       if (item.length > 0 && item !== 'exit' && item !== 'history') {
         fs.appendFile(historyPath, `${item}\n`, error => {
           if (error) {
@@ -109,43 +97,38 @@ class Shell extends Adapter {
         outstream.write(item + '\n')
       }
 
-      outstream.end(this.shutdown.bind(this))
+      outstream.end(this.shutdown.bind(this));
     })
   }
 }
 
-// let robot => new Shell(robot)
-
-function create(robot: any) {
+function create(robot) {
   return new Shell(robot)
 }
 
-export { create }
+export { create as default }
 
 // exports.use =
 
-// load history from .hubot_history.
+// load history from .shell_history.
 //
 // callback - A Function that is called with the loaded history items (or an empty array if there is no history)
-function loadHistory(callback: any) {
+function loadHistory(callback) {
   if (!fs.existsSync(historyPath)) {
     return callback(new Error('No history available'))
   }
 
   const instream = fs.createReadStream(historyPath)
-  // const outstream = new Stream()
-  // outstream.readable = true
-  // outstream.writable = true
+  const outstream = new Duplex();
+  const items = []
 
-  // const items = []
-
-  // readline.createInterface({ input: instream, output: outstream, terminal: false })
-  //   .on('line', function (line) {
-  //     line = line.trim()
-  //     if (line.length > 0) {
-  //       items.push(line)
-  //     }
-  //   })
-  //   .on('close', () => callback(null, items))
-  //   .on('error', callback)
+  readline.createInterface({ input: instream, output: outstream, terminal: false })
+    .on('line', function (line) {
+      line = line.trim()
+      if (line.length > 0) {
+        items.push(line)
+      }
+    })
+    .on('close', () => callback(null, items))
+    .on('error', callback)
 }

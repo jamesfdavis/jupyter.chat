@@ -1,13 +1,15 @@
+
+
 class Message {
 
-  user: any;
-  done: any;
-  room: any;
+  user;
+  done;
+  room;
 
   // Represents an incoming message from the chat.
   //
   // user - A User instance that sent the message.
-  constructor(user: any, done?: any) {
+  constructor(user, done) {
     this.user = user
     this.done = done || false
     this.room = this.user.room
@@ -22,14 +24,14 @@ class Message {
 }
 
 class TextMessage extends Message {
-  text: any;
-  id: any;
+  text;
+  id;
   // Represents an incoming message from the chat.
   //
   // user - A User instance that sent the message.
   // text - A String message.
   // id   - A String of the message ID.
-  constructor(user: any, text: any, id: any) {
+  constructor(user, text, id) {
     super(user)
     this.text = text
     this.id = id
@@ -40,7 +42,7 @@ class TextMessage extends Message {
   // regex - A Regex to check.
   //
   // Returns a Match object or null.
-  match(regex: any) {
+  match(regex) {
     return this.text.match(regex)
   }
 
@@ -74,11 +76,11 @@ class LeaveMessage extends Message { }
 class TopicMessage extends TextMessage { }
 
 class CatchAllMessage extends Message {
-  message: any;
+  message;
   // Represents a message that no matchers matched.
   //
   // message - The original message.
-  constructor(message: any) {
+  constructor(message) {
     super(message.user)
     this.message = message
   }
