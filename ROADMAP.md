@@ -11,7 +11,8 @@ This roadmap represents some of the priorities for the project over the next few
 
 ## Establish testing suite.
 - [x] Add JavaScript Linter and fix/refactor all files as needed.
-- [ ] Implement Mocha tests against Bot Shell instance.
+- [ ] Implement Test against Bot Shell instance.
+  Probably use [Jest](https://jestjs.io/).
 
 ## Generate example worflows.
 
