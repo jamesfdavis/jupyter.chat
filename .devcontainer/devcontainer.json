@@ -19,7 +19,8 @@
 		"stevencl.adddoccomments",
 		"dbaeumer.vscode-eslint",
 		"xabikos.javascriptsnippets",
-		"dracula-theme.theme-dracula"
+		"dracula-theme.theme-dracula",
+		"orta.vscode-jest"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

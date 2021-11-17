@@ -6,7 +6,7 @@ import process from "process";
 /**
  * Robot receives messages from a source and dispatch to matching listeners
  */
-class Robot {
+export default class Robot {
 
   /**
    * Configure Robot instance with Adapter.
@@ -69,4 +69,4 @@ class Robot {
 
 }
 
-export { Robot };
+
