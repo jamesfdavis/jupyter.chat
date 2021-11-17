@@ -5,7 +5,9 @@ Jupyter Chatbot aims to be a framework that analyzes Obsidian Graph data and por
 This roadmap represents some of the priorities for the project over the next few months. Issues or pull requests may be opened to discuss each of these items as they progress.
 
 ## Initiate the project.
-- [ ] Establish shell to run chat-flow.
+- [x] Establish shell to run chat-flow.
+  Worked through basic implementation of [https://github.com/kucoe/cline](cline) Shell setup.
+- [ ] Estalbish workflow for message processing - Send and reply to basic messages via Shell.
 
 ## Establish testing suite.
 
