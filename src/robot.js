@@ -64,7 +64,7 @@ export default class Robot {
    */
   shutdown() {
     process.removeListener("uncaughtException", this.onUncaughtException);
-    this.adapter.close();
+    // this.adapter.close();
   }
 
 }

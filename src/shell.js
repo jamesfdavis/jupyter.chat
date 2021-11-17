@@ -6,7 +6,6 @@ import cline from "cline";
 import log from "log";
 import * as  _require from "./message.js";
 import { Adapter } from "./adapter.js";
-import process from "process";
 
 const TextMessage = _require.TextMessage;
 const historySize = 1024;
@@ -18,6 +17,7 @@ class Shell extends Adapter {
   constructor(robot) {
     super();
     this.robot = robot;
+
     log.info("Constructing Shell");
 
     this.CommandLine = undefined;
@@ -63,11 +63,12 @@ class Shell extends Adapter {
   }
 
   /**
-   * Shutdown the Shell
+   * Close the Shell
    */
-  shutdown() {
+  close() {
+    this.CommandLine.close();
     this.robot.shutdown();
-    return process.exit(0);
+    // return process.exit(0);
   }
 
   /**
@@ -102,7 +103,7 @@ class Shell extends Adapter {
       history = this.CommandLine.history();
 
       if (history.length <= historySize) {
-        return this.shutdown();
+        return this.close();
       }
 
       startIndex = history.length - historySize;
@@ -119,7 +120,7 @@ class Shell extends Adapter {
         outstream.write(item + "\n");
       }
 
-      outstream.end(this.shutdown.bind(this));
+      outstream.end(this.close.bind(this));
     });
   }
 }
