@@ -13,6 +13,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 prev-build
 .shell_history
 
+
 # Runtime data
 pids
 *.pid

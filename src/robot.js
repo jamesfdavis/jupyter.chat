@@ -2,7 +2,6 @@ import { EventEmitter } from 'events';
 import log from 'log';
 import create from './shell.js';
 
-
 /**
  * Robot receives messages from a source and dispatch to matching listeners
  */
@@ -12,6 +11,9 @@ class Robot {
   events = new EventEmitter();
   adapter;
 
+  /**
+   * Configure Robot instance with Adapter.
+   */
   constructor() {
     this.name = 'Jupyter ChatBot'
     this.loadAdapter();
@@ -22,16 +24,28 @@ class Robot {
     process.on('uncaughtException', this.onUncaughtException)
   }
 
+  /**
+   * Load instance of Adapter
+   */
   loadAdapter() {
     log.info('Loading the shell adapter.');
     this.adapter = create(this);
   }
 
+  /**
+   * Raise events
+   * @param  {} event
+   */
   emit(event) {
-    // const args = [].slice.call(arguments, 1)
-    this.events.emit("connceted", ["connected"])
+    const args = [].slice.call(arguments, 1)
+
+    this.events.emit.apply(this.events, [event].concat(args))
   }
 
+  /**
+   * Receive messages.
+   * @param  {} message A Object with message, room and user details.
+   */
   receive(message) {
     // When everything is finished (down the middleware stack and back up),
     // pass control back to the robot
@@ -40,26 +54,20 @@ class Robot {
   }
 
 
-  // Returns nothing.
+  /**
+   * Run Adapter
+   */
   run() {
     this.emit('running');
     this.adapter.run();
   }
 
-  // Public: Gracefully shutdown the robot process
-  //
-  // Returns nothing.
+  /**
+   * Gracefully shutdown the robot process
+   */
   shutdown() {
-    // if (this.pingIntervalId != null) {
-    //   clearInterval(this.pingIntervalId)
-    // }
-    process.removeListener('uncaughtException', this.onUncaughtException)
-    this.adapter.close()
-    // if (this.server) {
-    //   this.server.close()
-    // }
-
-    // this.brain.close()
+    process.removeListener('uncaughtException', this.onUncaughtException);
+    this.adapter.close();
   }
 }
 
