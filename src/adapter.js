@@ -1,18 +1,17 @@
-import { EventEmitter } from 'events';
-import log from 'log'
+import { EventEmitter } from "events";
+import log from "log";
+
 
 /** Class abstract EventEmitter representing an Adapter.
  * An adapter is a specific interface to a chat source for robots.
  */
 class Adapter extends EventEmitter {
 
-  robot
   /**
-   * @param  {} robot A Robot instance.
-   */
-  constructor(robot) {
-    super()
-    this.robot = robot;
+ * @param  {} robot A Robot instance.
+ */
+  constructor() {
+    super();
   }
 
   // Public:  Extend this.
@@ -22,43 +21,44 @@ class Adapter extends EventEmitter {
   //
   // Returns nothing.
 
-
   /**
-   * Sending data back to the chat source.
-   * @param  {} envelope
-   */
+ * Sending data back to the chat source.
+ * @param  {} envelope
+ */
+  // eslint-disable-next-line no-unused-vars
   send(envelope) { }
 
   /**
-   * Building a reply and sending it back to the chat
-   * @param  {} envelope A Object with message, room and user details.
-   */
+ * Building a reply and sending it back to the chat
+ * @param  {} envelope A Object with message, room and user details.
+ */
+  // eslint-disable-next-line no-unused-vars
   reply(envelope) { }
 
-
   /**
-   * Setting a topic on the chat source
-   * @param  {} envelope A Object with message, room and user details.
-   */
+ * Setting a topic on the chat source
+ * @param  {} envelope A Object with message, room and user details.
+ */
+  // eslint-disable-next-line no-unused-vars
   topic(envelope) { }
 
   /**
-   * Invoking the Robot to run
-   */
+ * Invoking the Robot to run
+ */
   run() { }
 
   /**
-  * Shutting the bot down.
-  */
+* Shutting the bot down.
+*/
   close() { }
 
   /**
-   * Dispatch a received message to the robot
-   * @param  {} message
-   */
+ * Dispatch a received message to the robot
+ * @param  {} message
+ */
   receive(message) {
-    log.info(message)
-    this.robot.receive(message)
+    log.info(message);
+    this.robot.receive(message);
   }
 
 
@@ -119,4 +119,4 @@ class Adapter extends EventEmitter {
 
 }
 
-export { Adapter }
+export { Adapter };

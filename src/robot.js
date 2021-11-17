@@ -1,34 +1,32 @@
-import { EventEmitter } from 'events';
-import log from 'log';
-import create from './shell.js';
+import { EventEmitter } from "events";
+import log from "log";
+import create from "./shell.js";
+import process from "process";
 
 /**
  * Robot receives messages from a source and dispatch to matching listeners
  */
 class Robot {
 
-  name;
-  events = new EventEmitter();
-  adapter;
-
   /**
    * Configure Robot instance with Adapter.
    */
   constructor() {
-    this.name = 'Jupyter ChatBot'
+    this.events = new EventEmitter();
+    this.adapter = undefined;
+    this.name = "Jupyter ChatBot";
     this.loadAdapter();
-
     this.onUncaughtException = err => {
-      return this.emit('error', err)
-    }
-    process.on('uncaughtException', this.onUncaughtException)
+      return this.emit("error", err);
+    };
+    process.on("uncaughtException", this.onUncaughtException);
   }
 
   /**
    * Load instance of Adapter
    */
   loadAdapter() {
-    log.info('Loading the shell adapter.');
+    log.info("Loading the shell adapter.");
     this.adapter = create(this);
   }
 
@@ -37,9 +35,9 @@ class Robot {
    * @param  {} event
    */
   emit(event) {
-    const args = [].slice.call(arguments, 1)
+    const args = [].slice.call(arguments, 1);
 
-    this.events.emit.apply(this.events, [event].concat(args))
+    this.events.emit.apply(this.events, [event].concat(args));
   }
 
   /**
@@ -53,12 +51,11 @@ class Robot {
     log.info(message);
   }
 
-
   /**
    * Run Adapter
    */
   run() {
-    this.emit('running');
+    this.emit("running");
     this.adapter.run();
   }
 
@@ -66,9 +63,10 @@ class Robot {
    * Gracefully shutdown the robot process
    */
   shutdown() {
-    process.removeListener('uncaughtException', this.onUncaughtException);
+    process.removeListener("uncaughtException", this.onUncaughtException);
     this.adapter.close();
   }
+
 }
 
-export { Robot }
+export { Robot };

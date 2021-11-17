@@ -1,43 +1,37 @@
 /** Class representing a Message. */
 class Message {
 
-  user;
-  done;
-  room;
-
   /**
    * Represents an incoming message from the chat.
    * @param  {} user A User instance that sent the message.
    * @param  {} done Not sure
    */
   constructor(user, done) {
-    this.user = user
-    this.done = done || false
-    this.room = this.user.room
+    this.user = user;
+    this.done = done || false;
+    this.room = this.user.room;
   }
 
   /**
    * Indicates that no other Listener should be called on this object
    */
   finish() {
-    this.done = true
+    this.done = true;
   }
 
 }
 
 /** Class representing a TextMessage. */
 class TextMessage extends Message {
-  text;
-  id;
   /**
    * @param  {} user A User instance that sent the message.
    * @param  {} text A String message.
    * @param  {} id A String of the message ID.
    */
   constructor(user, text, id) {
-    super(user)
-    this.text = text
-    this.id = id
+    super(user);
+    this.text = text;
+    this.id = id;
   }
 
   /**
@@ -46,7 +40,7 @@ class TextMessage extends Message {
    * @returns Match object or null.
    */
   match(regex) {
-    return this.text.match(regex)
+    return this.text.match(regex);
   }
 
   /**
@@ -54,7 +48,7 @@ class TextMessage extends Message {
    * @returns Returns the message text
    */
   toString() {
-    return this.text
+    return this.text;
   }
 }
 
@@ -86,13 +80,12 @@ class TopicMessage extends TextMessage { }
 /** Class that represents a message that no matchers matched.
 */
 class CatchAllMessage extends Message {
-  message;
   /**
    * @param  {} message The original message.
    */
   constructor(message) {
-    super(message.user)
-    this.message = message
+    super(message.user);
+    this.message = message;
   }
 }
 
@@ -103,4 +96,4 @@ export {
   LeaveMessage,
   TopicMessage,
   CatchAllMessage
-}
+};

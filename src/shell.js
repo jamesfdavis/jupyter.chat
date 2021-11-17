@@ -1,35 +1,44 @@
-import * as fs from 'fs';
-import * as readline from 'readline';
-import { Duplex } from 'stream';
-import * as chalk from 'chalk';
-import cline from 'cline'
-import * as log from 'log'
-import * as  _require from './message.js';
-import { Adapter } from './adapter.js'
+import * as fs from "fs";
+import * as readline from "readline";
+import { Duplex } from "stream";
+import * as chalk from "chalk";
+import cline from "cline";
+import log from "log";
+import * as  _require from "./message.js";
+import { Adapter } from "./adapter.js";
+import process from "process";
 
-const TextMessage = _require.TextMessage
-const historySize = 1024
-const historyPath = '.shell_history'
+const TextMessage = _require.TextMessage;
+const historySize = 1024;
+const historyPath = ".shell_history";
 
 /** Shell Adapter concrete class. */
 class Shell extends Adapter {
 
-  CommandLine;
-  Logger;
+  constructor(robot) {
+    super();
+    this.robot = robot;
+    log.info("Constructing Shell");
+
+    this.CommandLine = undefined;
+    this.Logger = undefined;
+  }
 
   /**
   * Send a message
   * @param {Envelope} envelope - Send a message.
   */
+  // eslint-disable-next-line no-unused-vars
   send(envelope) {
-    const strings = [].slice.call(arguments, 1)
-    Array.from(strings).forEach(str => console.Logger(chalk.bold(`${str}`)))
+    const strings = [].slice.call(arguments, 1);
+    Array.from(strings).forEach(str => console.Logger(chalk.bold(`${str}`)));
   }
 
   /**
   * Reply to a message
   * @param {Envelope} envelope - Send a reply
   */
+  // eslint-disable-next-line no-unused-vars
   reply(envelope) {
     // const strings = [].slice.call(arguments, 1).map((s) => `${s}`)
     // this.send.apply(this, [envelope].concat(strings))
@@ -49,8 +58,8 @@ class Shell extends Adapter {
 
       }
       this.CommandLine.interact(`${this.robot.name}> `);
-      return this.emit('connected');
-    })
+      return this.emit("connected");
+    });
   }
 
   /**
@@ -67,51 +76,51 @@ class Shell extends Adapter {
   buildCli() {
     this.CommandLine = cline();
 
-    this.CommandLine.command('*', input => {
-      const userName = process.env.JUPYTER_SHELL_USER_NAME || 'Shell'
-      let user = { name: "User", room: "Shell" }
-      this.receive(new TextMessage(user, input, 'messageId'))
-    })
+    this.CommandLine.command("*", input => {
+      // const userName = process.env.JUPYTER_SHELL_USER_NAME || "Shell";
+      let user = { name: "User", room: "Shell" };
+      this.receive(new TextMessage(user, input, "messageId"));
+    });
 
-    this.CommandLine.command('history', () => {
-      Array.from(this.CommandLine.history()).map(item => console.Logger(item))
-    })
+    this.CommandLine.command("history", () => {
+      Array.from(this.CommandLine.history()).map(item => console.Logger(item));
+    });
 
-    this.CommandLine.on('history', (item) => {
-      if (item.length > 0 && item !== 'exit' && item !== 'history') {
+    this.CommandLine.on("history", (item) => {
+      if (item.length > 0 && item !== "exit" && item !== "history") {
         fs.appendFile(historyPath, `${item}\n`, error => {
           if (error) {
-            this.robot.emit('error', error)
+            this.robot.emit("error", error);
           }
-        })
+        });
       }
-    })
+    });
 
-    this.CommandLine.on('close', () => {
-      let fileOpts, history, i, item, len, outstream, startIndex
+    this.CommandLine.on("close", () => {
+      let fileOpts, history, i, item, len, outstream, startIndex;
 
-      history = this.CommandLine.history()
+      history = this.CommandLine.history();
 
       if (history.length <= historySize) {
-        return this.shutdown()
+        return this.shutdown();
       }
 
-      startIndex = history.length - historySize
-      history = history.reverse().splice(startIndex, historySize)
+      startIndex = history.length - historySize;
+      history = history.reverse().splice(startIndex, historySize);
       fileOpts = {
         mode: 0x180
-      }
+      };
 
-      outstream = fs.createWriteStream(historyPath, fileOpts)
-      outstream.on('finish', this.shutdown.bind(this))
+      outstream = fs.createWriteStream(historyPath, fileOpts);
+      outstream.on("finish", this.shutdown.bind(this));
 
       for (i = 0, len = history.length; i < len; i++) {
-        item = history[i]
-        outstream.write(item + '\n')
+        item = history[i];
+        outstream.write(item + "\n");
       }
 
       outstream.end(this.shutdown.bind(this));
-    })
+    });
   }
 }
 
@@ -121,22 +130,22 @@ class Shell extends Adapter {
  */
 function loadHistory(callback) {
   if (!fs.existsSync(historyPath)) {
-    return callback(new Error('No history available'))
+    return callback(new Error("No history available"));
   }
 
-  const instream = fs.createReadStream(historyPath)
+  const instream = fs.createReadStream(historyPath);
   const outstream = new Duplex();
-  const items = []
+  const items = [];
 
   readline.createInterface({ input: instream, output: outstream, terminal: false })
-    .on('line', function (line) {
-      line = line.trim()
+    .on("line", function (line) {
+      line = line.trim();
       if (line.length > 0) {
-        items.push(line)
+        items.push(line);
       }
     })
-    .on('close', () => callback(null, items))
-    .on('error', callback)
+    .on("close", () => callback(null, items))
+    .on("error", callback);
 }
 
 /**
@@ -144,7 +153,7 @@ function loadHistory(callback) {
  * @return  {} new Shell Adapter
  */
 function create(robot) {
-  return new Shell(robot)
+  return new Shell(robot);
 }
 
-export { create as default }
+export { create as default };
