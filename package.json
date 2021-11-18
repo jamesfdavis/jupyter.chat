@@ -33,6 +33,7 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "async": "^3.2.2",
     "chalk": "^4.1.2",
     "cline": "^0.8.2",
     "log": "^6.3.1",

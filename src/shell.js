@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as readline from "readline";
 import { Duplex } from "stream";
-import * as chalk from "chalk";
+import chalk from "chalk";
 import cline from "cline";
 import log from "log";
 import * as  _require from "./message.js";
@@ -16,12 +16,12 @@ class Shell extends Adapter {
 
   constructor(robot) {
     super();
+
     this.robot = robot;
+    this.logger = log;
 
-    log.info("Constructing Shell");
-
+    this.logger.info("Constructing Shell");
     this.CommandLine = undefined;
-    this.Logger = undefined;
   }
 
   /**
@@ -31,17 +31,16 @@ class Shell extends Adapter {
   // eslint-disable-next-line no-unused-vars
   send(envelope) {
     const strings = [].slice.call(arguments, 1);
-    Array.from(strings).forEach(str => console.Logger(chalk.bold(`${str}`)));
+    Array.from(strings).forEach(str => console.log(chalk.green`${str}`));
   }
 
   /**
   * Reply to a message
   * @param {Envelope} envelope - Send a reply
   */
-  // eslint-disable-next-line no-unused-vars
   reply(envelope) {
-    // const strings = [].slice.call(arguments, 1).map((s) => `${s}`)
-    // this.send.apply(this, [envelope].concat(strings))
+    const strings = [].slice.call(arguments, 1).map((s) => `${s}`);
+    this.send.apply(this, [envelope].concat(strings));
   }
 
   /**
@@ -55,7 +54,6 @@ class Shell extends Adapter {
         console.Logger(error.message);
       } else {
         this.CommandLine.history(history);
-
       }
       this.CommandLine.interact(`${this.robot.name}> `);
       return this.emit("connected");
@@ -67,8 +65,6 @@ class Shell extends Adapter {
    */
   close() {
     this.CommandLine.close();
-    this.robot.shutdown();
-    // return process.exit(0);
   }
 
   /**

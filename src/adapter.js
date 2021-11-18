@@ -1,7 +1,6 @@
 import { EventEmitter } from "events";
 import log from "log";
 
-
 /** Class abstract EventEmitter representing an Adapter.
  * An adapter is a specific interface to a chat source for robots.
  */
@@ -12,18 +11,12 @@ class Adapter extends EventEmitter {
  */
   constructor() {
     super();
+    this.logger = log;
   }
-
-  // Public:  Extend this.
-  //
-  // envelope - A Object with message, room and user details.
-  // strings  - One or more Strings for each message to send.
-  //
-  // Returns nothing.
 
   /**
  * Sending data back to the chat source.
- * @param  {} envelope
+ * @param  {} envelope - A Object with message, room and user details.
  */
   // eslint-disable-next-line no-unused-vars
   send(envelope) { }
@@ -48,16 +41,16 @@ class Adapter extends EventEmitter {
   run() { }
 
   /**
-* Shutting the bot down.
+* Shutting the Robot down.
 */
   close() { }
 
   /**
- * Dispatch a received message to the robot
+ * Dispatch a received message to the Robot
  * @param  {} message
  */
   receive(message) {
-    log.info(message);
+    this.logger.info(message);
     this.robot.receive(message);
   }
 
