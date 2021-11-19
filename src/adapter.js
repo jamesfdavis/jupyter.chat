@@ -54,7 +54,6 @@ class Adapter extends EventEmitter {
     this.robot.receive(message);
   }
 
-
   // // Public: Get an Array of User objects stored in the brain.
   // //
   // // Returns an Array of User objects.

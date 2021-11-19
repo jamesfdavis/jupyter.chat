@@ -149,8 +149,8 @@ function loadHistory(callback) {
  * @param  {} robot Robot instance
  * @return  {} new Shell Adapter
  */
-function create(robot) {
+function CreateShell(robot) {
   return new Shell(robot);
 }
 
-export { create as default };
+export { CreateShell };

@@ -2,15 +2,16 @@ import { EventEmitter } from "events";
 import process from "process";
 import fs from "fs";
 import path from "path";
-
 import log from "log";
-import async from "async";
 
-import create from "./shell.js";
+// import { detectSeries } from "async";
+import { CreateShell } from "./shell.js";
 import { Middleware } from "./middleware.js";
 import { Message } from "./message.js";
 import { TextListener } from "./listener.js";
 import { Response } from "./response.js";
+
+import promiseSeries from "promise.series";
 
 /**
  * Robot receives messages from a source and dispatch to matching listeners
@@ -25,6 +26,7 @@ export default class Robot {
     this.adapter = undefined;
     this.Response = Response;
     this.name = "Jupyter ChatBot";
+    this.alias = "jupyter";
     this.logger = log;
     this.loadAdapter();
     this.onUncaughtException = err => {
@@ -46,7 +48,7 @@ export default class Robot {
    */
   loadAdapter() {
     this.logger.info("Loading the shell adapter.");
-    this.adapter = create(this);
+    this.adapter = CreateShell(this);
   }
 
   /**
@@ -124,19 +126,21 @@ export default class Robot {
       this.logger.warning(`The regex in question was ${regex.toString()}`);
     }
 
+    // @jupyter: some stuff
     if (!this.alias) {
-      return new RegExp("^\\s*[@]?" + name + "[:,]?\\s*(?:" + pattern + ")", modifiers);
+      return new RegExp("^[ ]*[@]?" + name + "[:,]?[ ]*(?:" + pattern + ")", modifiers);
     }
 
     const alias = this.alias.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 
     // matches properly when alias is substring of name
     if (name.length > alias.length) {
-      return new RegExp("^\\s*[@]?(?:" + name + "[:,]?|" + alias + "[:,]?)\\s*(?:" + pattern + ")", modifiers);
+      return new RegExp("^[ ]*[@]?(?:" + name + "[:,]?|" + alias + "[:,]?)[ ]*(?:" + pattern + ")", modifiers);
     }
 
     // matches properly when name is substring of alias
-    return new RegExp("^\\s*[@]?(?:" + alias + "[:,]?|" + name + "[:,]?)\\s*(?:" + pattern + ")", modifiers);
+    return new RegExp("^[ ][@]?(?:" + alias + "[:,]?|" + name + "[:,]?)[ ](?:" + pattern + ")", modifiers);
+
   }
 
   /**
@@ -200,7 +204,9 @@ export default class Robot {
   }
 
   /**
-   * Passes the given message to any interested Listeners.
+   * Passes the given message to any interested Listeners. 
+   * Listeners should be processed one at a time to avoid collisions.
+   * 
    * @param  {} context - A Message instance. Listeners can flag this message as 'done' to prevent further execution.
    * @param  {} done - Optional callback that is called when message processing is complete
    */
@@ -208,38 +214,35 @@ export default class Robot {
     // Try executing all registered Listeners in order of registration
     // and return after message is done being processed
     let anyListenersExecuted = false;
+    let list = [];
 
-    // Ignore the result ( == the listener that set message.done = true)
-    let fnIg = () => {
-      // If no registered Listener matched the message
-      if (!(context.response.message instanceof Message.CatchAllMessage) && !anyListenersExecuted) {
-        this.logger.debug("No listeners executed; falling back to catch-all");
-        this.receive(new Message.CatchAllMessage(context.response.message), done);
-      } else {
-        if (done != null) {
-          process.nextTick(done);
+    this.listeners.forEach(listener => {
+      list.push(new Promise((resolve, reject) => {
+        try {
+          listener.call(context.response.message, this.middleware.listener, function (listenerExecuted) {
+            anyListenersExecuted = anyListenersExecuted || listenerExecuted;
+            // Defer to the event loop at least after every listener so the
+            // stack doesn't get too big
+            process.nextTick(() => {
+              // Stop processing when message.done == true
+              resolve(context.response);
+            });
+          });
+        } catch (err) {
+          this.emit("error", err, new this.Response(this, context.response.message, []));
+          // Continue to next listener when there is an error
+          reject(false);
         }
-      }
-    };
+      }));
+    });
 
-    async.detectSeries(this.listeners, (listener, done) => {
-      try {
-        listener.call(context.response.message, this.middleware.listener, function (listenerExecuted) {
-          anyListenersExecuted = anyListenersExecuted || listenerExecuted;
-          // Defer to the event loop at least after every listener so the
-          // stack doesn't get too big
-          process.nextTick(() =>
-            // Stop processing when message.done == true
-            done(context.response.message.done)
-          );
-        });
-      } catch (err) {
-        this.emit("error", err, new this.Response(this, context.response.message, []));
-        // Continue to next listener when there is an error
-        done(false);
-      }
-    }, fnIg
-    );
+    promiseSeries(list, 1).then(() => {
+      // console.log(result);
+      //=> 4
+    });
+
+    done();
+
   }
 
   /**
