@@ -7,10 +7,7 @@ import path from "path";
 let robot = new Robot();
 
 function loadScripts() {
-
-
   let script = path.resolve(".", "scripts");
-
   robot.load(script);
   // robot.load(pathResolve('.', 'scripts'))
   // robot.load(pathResolve('.', 'src', 'scripts'))

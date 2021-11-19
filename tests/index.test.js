@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-import Robot from "./../src/robot.js";
+import { Robot } from "./../src/robot.js";
 
-describe("Entry Point -", () => {
+describe("Index - Entrypoint", () => {
   test("ChatBot able to connect.", (done) => {
     const r = new Robot();
     r.adapter.once("connected", () => {

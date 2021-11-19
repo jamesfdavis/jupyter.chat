@@ -4,8 +4,7 @@ import fs from "fs";
 import path from "path";
 import log from "log";
 
-// import { detectSeries } from "async";
-import { CreateShell } from "./shell.js";
+import { Shell } from "./shell.js";
 import { Middleware } from "./middleware.js";
 import { Message } from "./message.js";
 import { TextListener } from "./listener.js";
@@ -16,7 +15,7 @@ import promiseSeries from "promise.series";
 /**
  * Robot receives messages from a source and dispatch to matching listeners
  */
-export default class Robot {
+export class Robot {
 
   /**
    * Configure Robot instance with Adapter.
@@ -48,7 +47,7 @@ export default class Robot {
    */
   loadAdapter() {
     this.logger.info("Loading the shell adapter.");
-    this.adapter = CreateShell(this);
+    this.adapter = new Shell(this);
   }
 
   /**

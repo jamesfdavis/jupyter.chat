@@ -12,7 +12,7 @@ const historySize = 1024;
 const historyPath = ".shell_history";
 
 /** Shell Adapter concrete class. */
-class Shell extends Adapter {
+export class Shell extends Adapter {
 
   constructor(robot) {
     super();
@@ -145,12 +145,12 @@ function loadHistory(callback) {
     .on("error", callback);
 }
 
-/**
- * @param  {} robot Robot instance
- * @return  {} new Shell Adapter
- */
-function CreateShell(robot) {
-  return new Shell(robot);
-}
+// /**
+//  * @param  {} robot Robot instance
+//  * @return  {} new Shell Adapter
+//  */
+// function CreateShell(robot) {
+//   return new Shell(robot);
+// }
 
-export { CreateShell };
+// export { CreateShell };
