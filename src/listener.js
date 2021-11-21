@@ -1,4 +1,5 @@
 import process from "process";
+import logger from "tracer";
 
 import { Middleware } from "./middleware.js";
 import { TextMessage } from "./message.js";
@@ -21,6 +22,7 @@ class Listener {
     this.matcher = matcher;
     this.options = options;
     this.callback = callback;
+    this.logger = logger.console();
 
     if (this.matcher == null) {
       throw new Error("Missing a matcher for Listener");

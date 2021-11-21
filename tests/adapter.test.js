@@ -1,17 +1,17 @@
 /* eslint-disable no-undef */
 
-import { Shell } from "./../src/shell.js";
+import { Adapter } from "./../src/adapter.js";
 import { Robot } from "./../src/robot.js";
+import { Shell } from "./../src/adapter.shell.js";
 
-jest.mock("./../src/shell.js");
+jest.mock("./../src/adapter.js");
 
-// // console.log(Shell);
 describe("Adapter", function () {
   beforeEach(function () {
-    Shell.mockClear();
+    Adapter.mockClear();
   });
   it("Check if the consumer called the class constructor.", function () {
-    this.robot = new Robot();
-    expect(Shell).toHaveBeenCalledTimes(1);
+    this.robot = new Robot(Shell);
+    expect(Adapter).toHaveBeenCalledTimes(1);
   });
 });

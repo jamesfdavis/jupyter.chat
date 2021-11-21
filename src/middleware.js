@@ -1,5 +1,6 @@
 import process from "process";
 import async from "async";
+import logger from "tracer";
 
 /** Class for processing middleware in a batch.
  */
@@ -7,6 +8,7 @@ export class Middleware {
   constructor(robot) {
     this.robot = robot;
     this.stack = [];
+    this.logger = logger.console();
   }
 
   /**

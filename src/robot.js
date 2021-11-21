@@ -2,9 +2,8 @@ import { EventEmitter } from "events";
 import process from "process";
 import fs from "fs";
 import path from "path";
-import log from "log";
+import logger from "tracer";
 
-import { Shell } from "./shell.js";
 import { Middleware } from "./middleware.js";
 import { Message } from "./message.js";
 import { TextListener } from "./listener.js";
@@ -20,14 +19,13 @@ export class Robot {
   /**
    * Configure Robot instance with Adapter.
    */
-  constructor() {
+  constructor(adapter) {
     this.events = new EventEmitter();
-    this.adapter = undefined;
     this.Response = Response;
     this.name = "Jupyter ChatBot";
     this.alias = "jupyter";
-    this.logger = log;
-    this.loadAdapter();
+    this.logger = logger.console();
+    this.loadAdapter(adapter);
     this.onUncaughtException = err => {
       return this.emit("error", err);
     };
@@ -38,16 +36,18 @@ export class Robot {
     };
 
     this.listeners = [];
-
     process.on("uncaughtException", this.onUncaughtException);
   }
 
   /**
    * Load instance of Adapter
    */
-  loadAdapter() {
+  loadAdapter(Shell) {
     this.logger.info("Loading the shell adapter.");
     this.adapter = new Shell(this);
+
+    // TODO - Figure out what to do about failing Jest ESM modules.
+    // this.load(path.resolve("./", "scripts"));
   }
 
   /**
@@ -197,6 +197,7 @@ export class Robot {
    * @param  {} cb - CallBack
    */
   receive(message, cb) {
+    this.logger.info("Received on bot!");
     // When everything is finished (down the middleware stack and back up),
     // pass control back to the robot
     this.middleware.receive.execute({ response: new Response(this, message) }, this.processListeners.bind(this), cb);
@@ -225,6 +226,7 @@ export class Robot {
             process.nextTick(() => {
               // Stop processing when message.done == true
               resolve(context.response);
+              // console.log(context.response);
             });
           });
         } catch (err) {
@@ -235,12 +237,13 @@ export class Robot {
       }));
     });
 
+
     promiseSeries(list, 1).then(() => {
-      // console.log(result);
+      //  console.log(result);
       //=> 4
+      done();
     });
 
-    done();
 
   }
 
@@ -278,7 +281,8 @@ export class Robot {
       }
     } catch (error) {
       this.logger.error(`Unable to load ${script}: ${error.stack}`);
-      process.exit(1);
+      console.log(`Unable to load ${script}: ${error.stack}`);
+      // process.exit(1);
     }
   }
 

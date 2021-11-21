@@ -1,4 +1,6 @@
 
+import logger from "tracer";
+
 /** Class that responds to matching listeners */
 class Response {
   /**
@@ -12,6 +14,7 @@ class Response {
     this.robot = robot;
     this.message = message;
     this.match = match;
+    this.logger = logger.console();
     this.envelope = {
       room: this.message.room,
       user: this.message.user,
