@@ -50,7 +50,6 @@ class Adapter extends EventEmitter {
  * @param  {} message
  */
   receive(message) {
-    this.logger.info(message);
     this.robot.receive(message);
   }
 

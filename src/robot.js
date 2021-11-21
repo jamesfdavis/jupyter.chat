@@ -237,13 +237,12 @@ export class Robot {
       }));
     });
 
-
+    // TODO - Decide if this is the usage of the Promise use.
     promiseSeries(list, 1).then(() => {
       //  console.log(result);
       //=> 4
       done();
     });
-
 
   }
 
@@ -252,9 +251,13 @@ export class Robot {
    * @param  {} path - A String path on the filesystem.
    */
   load(path) {
-    this.logger.debug(`Loading scripts from ${path}`);
-    if (fs.existsSync(path)) {
-      fs.readdirSync(path).sort().map(file => this.loadFile(path, file));
+    if (typeof path === "string") {
+      this.logger.info(`Loading scripts from ${path}`);
+      if (fs.existsSync(path)) {
+        fs.readdirSync(path).sort().map(file => this.loadFile({ path: path, file: file }));
+      }
+    } else { // Module
+      this.loadFile(path);
     }
   }
 
@@ -264,24 +267,29 @@ export class Robot {
    * @param  {} filepath - A String path on the filesystem.
    * @param  {} filename - A String filename in path on the filesystem.
    */
-  async loadFile(filepath, filename) {
+  async loadFile(extension) {
+    let script = undefined;
+    let module = extension;
 
-    const ext = path.extname(filename);
-    const script = `${path.join(filepath, path.basename(filename, ext))}${ext}`;
+    if (typeof extension === "object") {
+      const ext = path.extname(extension.file);
+      script = `${path.join(extension.path, path.basename(extension.file, ext))}${ext}`;
+      let { default: theThing } = await import(script);
+      module = theThing;
+    }
 
     try {
       // https://dmitripavlutin.com/ecmascript-modules-dynamic-import/#22-importing-of-default-export
-      let { default: module } = await import(script);
+
       if (typeof module === "function") {
         module(this);
         // TODO - Determine strategy for help system.
         //this.parseHelp(path.join(filepath, filename));
       } else {
-        this.logger.warning(`Expected ${script} to assign a function to module.exports, got ${typeof module}`);
+        this.logger.warn(`Expected ${script} to assign a function to module.exports, got ${typeof module}`);
       }
     } catch (error) {
       this.logger.error(`Unable to load ${script}: ${error.stack}`);
-      console.log(`Unable to load ${script}: ${error.stack}`);
       // process.exit(1);
     }
   }

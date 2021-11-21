@@ -3,7 +3,7 @@ import * as readline from "readline";
 import { Duplex } from "stream";
 import chalk from "chalk";
 import cline from "cline";
-import log from "log";
+import logger from "tracer";
 import * as  _require from "./message.js";
 import { Adapter } from "./adapter.js";
 
@@ -18,7 +18,7 @@ export class Shell extends Adapter {
     super();
 
     this.robot = robot;
-    this.logger = log;
+    this.logger = logger.console();
 
     this.logger.info("Constructing Shell");
     this.CommandLine = undefined;
