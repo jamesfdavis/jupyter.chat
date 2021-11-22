@@ -1,6 +1,5 @@
 import process from "process";
 import async from "async";
-import logger from "tracer";
 
 /** Class for processing middleware in a batch.
  */
@@ -8,7 +7,6 @@ export class Middleware {
   constructor(robot) {
     this.robot = robot;
     this.stack = [];
-    this.logger = logger.console();
   }
 
   /**
@@ -52,6 +50,7 @@ export class Middleware {
     function allDone(_, finalDoneFunc) {
       next(context, finalDoneFunc);
     }
+
 
     // Execute each piece of middleware, collecting the latest 'done' callback
     // at each step.

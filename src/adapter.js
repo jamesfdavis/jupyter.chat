@@ -50,7 +50,7 @@ class Adapter extends EventEmitter {
  * @param  {} message
  */
   receive(message) {
-    logger.trace("adapter", message);
+    logger.trace("Received", message.text);
     this.robot.receive(message);
   }
 

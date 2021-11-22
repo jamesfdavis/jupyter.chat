@@ -10,10 +10,11 @@ const logger = log(level.WARN);
 import * as  _require from "./../src/message.js";
 const TextMessage = _require.TextMessage;
 
-import { ext as moduleSimple } from "./../scripts/simple.js";
+import { ext } from "./../scripts/simple.js";
 
 // eslint-disable-next-line no-unused-vars
-describe.skip("Shell Adapter", () => {
+describe("Shell Adapter", () => {
+
   test("Bot is able to connect to adapter.", (done) => {
     const r = new Robot(Shell);
     r.adapter.once("connected", () => {
@@ -27,7 +28,7 @@ describe.skip("Shell Adapter", () => {
     const r = new Robot(Shell);
     r.adapter.once("connected", () => {
       // Load response module onto bot.
-      r.load(moduleSimple);
+      r.load({ module: ext, name: "Simple.js" });
       let user = { name: "User", room: "Shell" };
       r.adapter.receive(new TextMessage(user, "Badger", "messageId"));
       r.shutdown();
@@ -35,4 +36,5 @@ describe.skip("Shell Adapter", () => {
     });
     r.run();
   });
+
 });

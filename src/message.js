@@ -1,4 +1,5 @@
 import { log } from "./logger";
+// eslint-disable-next-line no-unused-vars
 const logger = log();
 
 /** Class representing a Message. */
@@ -57,7 +58,6 @@ class TextMessage extends Message {
 
 // Represents an incoming user entrance notification.
 //
-
 
 /** Class that represents an incoming user entrance notification. 
 * user - A User instance for the user who entered.

@@ -39,14 +39,12 @@ export class Robot {
   }
 
   /**
-   * Load instance of Adapter
+   * Load instance of an Adapter
+   * @param  {} Shell - Class derived from Adapter
    */
   loadAdapter(Shell) {
-    logger.info("Loading the shell adapter.");
     this.adapter = new Shell(this);
-
-    // TODO - Figure out what to do about failing Jest ESM modules.
-    // this.load(path.resolve("./", "scripts"));
+    logger.trace(`Bot using ${this.adapter.toString()}`);
   }
 
   /**
@@ -196,7 +194,7 @@ export class Robot {
    * @param  {} cb - CallBack
    */
   receive(message, cb) {
-    logger.trace("bot.received", message);
+    logger.trace("Received", message.text);
     // When everything is finished (down the middleware stack and back up),
     // pass control back to the robot
     this.middleware.receive.execute({ response: new Response(this, message) }, this.processListeners.bind(this), cb);
@@ -214,6 +212,8 @@ export class Robot {
     // and return after message is done being processed
     let anyListenersExecuted = false;
     let list = [];
+
+    logger.trace(`Process ${this.listeners.length} listeners.`);
 
     this.listeners.forEach(listener => {
       list.push(new Promise((resolve, reject) => {
@@ -236,10 +236,8 @@ export class Robot {
       }));
     });
 
-    // TODO - Decide if this is the usage of the Promise use.
+    // Process series of listeners, then exit.
     promiseSeries(list, 1).then(() => {
-      //  console.log(result);
-      //=> 4
       done();
     });
 
@@ -247,16 +245,17 @@ export class Robot {
 
   /**
    * Loads every script in the given path.
-   * @param  {} path - A String path on the filesystem.
+   * @param  {} obj - A String path on the filesystem.
    */
-  load(path) {
-    if (typeof path === "string") {
-      logger.info(`Loading scripts from ${path}`);
-      if (fs.existsSync(path)) {
-        fs.readdirSync(path).sort().map(file => this.loadFile({ path: path, file: file }));
+  load(obj) {
+    if (typeof obj === "string") {
+      logger.trace(`Load modules from location ${obj}`);
+      if (fs.existsSync(obj)) {
+        fs.readdirSync(obj).sort().map(file => this.loadFile({ path: obj, file: file }));
       }
     } else { // Module
-      this.loadFile(path);
+      logger.trace(`Load instance module ${obj.name}`);
+      this.loadFile(obj);
     }
   }
 
@@ -267,14 +266,18 @@ export class Robot {
    * @param  {} filename - A String filename in path on the filesystem.
    */
   async loadFile(extension) {
+
+    // TODO - Standardize input of local or external module definitions.
     let script = undefined;
     let module = extension;
 
-    if (typeof extension === "object") {
+    if (extension.file) {
       const ext = path.extname(extension.file);
       script = `${path.join(extension.path, path.basename(extension.file, ext))}${ext}`;
-      let { default: theThing } = await import(script);
-      module = theThing;
+      let { default: external } = await import(script);
+      module = external;
+    } else {
+      module = extension.module;
     }
 
     try {
@@ -282,8 +285,6 @@ export class Robot {
 
       if (typeof module === "function") {
         module(this);
-        // TODO - Determine strategy for help system.
-        //this.parseHelp(path.join(filepath, filename));
       } else {
         logger.warn(`Expected ${script} to assign a function to module.exports, got ${typeof module}`);
       }

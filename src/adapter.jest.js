@@ -20,8 +20,9 @@ export class Jest extends Adapter {
   */
   // eslint-disable-next-line no-unused-vars
   send(envelope) {
-    // const strings = [].slice.call(arguments, 1);
-    // Array.from(strings).forEach(str => console.log(chalk.green`${str}`));
+    logger.trace("Send");
+    const strings = [].slice.call(arguments, 1);
+    Array.from(strings).forEach(str => { this.emit("send", str); });
   }
 
   /**
@@ -30,15 +31,16 @@ export class Jest extends Adapter {
   */
   // eslint-disable-next-line no-unused-vars
   reply(envelope) {
-    // const strings = [].slice.call(arguments, 1).map((s) => `${s}`);
-    // this.send.apply(this, [envelope].concat(strings));
+    logger.trace("Reply");
+    const strings = [].slice.call(arguments, 1).map((s) => `${s}`);
+    this.send.apply(this, [envelope].concat(strings));
   }
 
   /**
   * Run the instance.
   */
   run() {
-    logger.trace("Adapter.Jest Connected Emit")
+    logger.trace("emit connected event");
     this.emit("connected");
   }
 
@@ -49,6 +51,10 @@ export class Jest extends Adapter {
     // const userName = process.env.JUPYTER_SHELL_USER_NAME || "Shell";
     let user = { name: "User", room: "Shell" };
     this.receive(new TextMessage(user, message, "messageId"));
+  }
+
+  toString() {
+    return "Jest Adapter";
   }
 
 }

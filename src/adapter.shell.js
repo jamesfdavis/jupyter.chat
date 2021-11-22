@@ -121,6 +121,11 @@ export class Shell extends Adapter {
       outstream.end(this.close.bind(this));
     });
   }
+
+  toString() {
+    return "Shell Adapter";
+  }
+
 }
 
 /**
@@ -146,13 +151,3 @@ function loadHistory(callback) {
     .on("close", () => callback(null, items))
     .on("error", callback);
 }
-
-// /**
-//  * @param  {} robot Robot instance
-//  * @return  {} new Shell Adapter
-//  */
-// function CreateShell(robot) {
-//   return new Shell(robot);
-// }
-
-// export { CreateShell };

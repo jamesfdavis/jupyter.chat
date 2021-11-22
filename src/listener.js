@@ -67,17 +67,18 @@ class Listener {
 
     const match = this.matcher(message);
     if (match) {
-      if (this.regex) {
-        logger.debug(`Message '${message}' matched regex /${this.regex}/; listener.options = ${this.options}`);
-      }
+      if (this.regex)
+        logger.trace(`Message '${message}' matched regex /${this.regex}/; listener.options = ${this.options}`);
+
 
       // special middleware-like function that always executes the Listener's
       // callback and calls done (never calls 'next')
       const executeListener = (context, done) => {
-        logger.debug(`Executing listener callback for Message '${message}'`);
+        logger.trace(`Executing listener callback for Message '${message}'`);
         try {
           this.callback(context.response);
         } catch (err) {
+          logger.warn(err, context.response);
           this.robot.emit("error", err, context.response);
         }
         done();
@@ -98,6 +99,7 @@ class Listener {
       return true;
     } else {
       if (didMatchCallback != null) {
+        logger.trace(`Message '${message}' did not match regex /${this.regex}/; listener.options = ${this.options}`);
         // No, we didn't try to execute the listener callback
         process.nextTick(() => didMatchCallback(false));
       }
