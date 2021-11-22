@@ -8,12 +8,15 @@ This roadmap represents some of the priorities for the project over the next few
 - [x] Establish shell to run chat-flow.
   Worked through basic implementation of [https://github.com/kucoe/cline](cline) Shell setup.
 - [x] Estalbish workflow for message processing - Send and reply to basic messages via Shell.
-- [ ] Process request and response workflow when bot is named in a message.
+- [x] Process request and response workflow when bot is named in a message.
+- [ ] Build out tests for variations of hear and respond ordering
+  What happends when two extensions have the same signature?
 
 ## Establish testing suite.
 - [x] Add JavaScript Linter and fix/refactor all files as needed.
 - [x] Implement test against Chatbot shell instance.
   Using [Jest](https://jestjs.io/).
+- [ ] Get active debugging working under Jest.
 
 ## Generate example worflows.
 
