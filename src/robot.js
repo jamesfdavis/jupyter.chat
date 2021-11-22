@@ -3,13 +3,12 @@ import process from "process";
 import fs from "fs";
 import path from "path";
 
-import { log } from "./../src/logger";
 import { Middleware } from "./middleware.js";
 import { Message } from "./message.js";
 import { TextListener } from "./listener.js";
 import { Response } from "./response.js";
 import promiseSeries from "promise.series";
-
+import { log } from "./../src/logger";
 const logger = log();
 
 /**
@@ -25,7 +24,6 @@ export class Robot {
     this.Response = Response;
     this.name = "Jupyter ChatBot";
     this.alias = "jupyter";
-    this.log = logger;
     this.loadAdapter(adapter);
     this.onUncaughtException = err => {
       return this.emit("error", err);
@@ -44,7 +42,7 @@ export class Robot {
    * Load instance of Adapter
    */
   loadAdapter(Shell) {
-    this.log.info("Loading the shell adapter.");
+    logger.info("Loading the shell adapter.");
     this.adapter = new Shell(this);
 
     // TODO - Figure out what to do about failing Jest ESM modules.
@@ -122,8 +120,8 @@ export class Robot {
     const name = this.name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 
     if (regexStartsWithAnchor) {
-      this.log.warning("Anchors don’t work well with respond, perhaps you want to use 'hear'");
-      this.log.warning(`The regex in question was ${regex.toString()}`);
+      logger.warning("Anchors don’t work well with respond, perhaps you want to use 'hear'");
+      logger.warning(`The regex in question was ${regex.toString()}`);
     }
 
     // @jupyter: some stuff
@@ -198,7 +196,7 @@ export class Robot {
    * @param  {} cb - CallBack
    */
   receive(message, cb) {
-    this.log.trace("bot.received", message);
+    logger.trace("bot.received", message);
     // When everything is finished (down the middleware stack and back up),
     // pass control back to the robot
     this.middleware.receive.execute({ response: new Response(this, message) }, this.processListeners.bind(this), cb);
@@ -253,7 +251,7 @@ export class Robot {
    */
   load(path) {
     if (typeof path === "string") {
-      this.log.info(`Loading scripts from ${path}`);
+      logger.info(`Loading scripts from ${path}`);
       if (fs.existsSync(path)) {
         fs.readdirSync(path).sort().map(file => this.loadFile({ path: path, file: file }));
       }
@@ -287,10 +285,10 @@ export class Robot {
         // TODO - Determine strategy for help system.
         //this.parseHelp(path.join(filepath, filename));
       } else {
-        this.log.warn(`Expected ${script} to assign a function to module.exports, got ${typeof module}`);
+        logger.warn(`Expected ${script} to assign a function to module.exports, got ${typeof module}`);
       }
     } catch (error) {
-      this.log.error(`Unable to load ${script}: ${error.stack}`);
+      logger.error(`Unable to load ${script}: ${error.stack}`);
       // process.exit(1);
     }
   }

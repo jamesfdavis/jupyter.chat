@@ -1,4 +1,5 @@
-import logger from "tracer";
+import { log } from "./logger";
+const logger = log();
 
 /** Class representing a Message. */
 class Message {
@@ -10,7 +11,6 @@ class Message {
    */
   constructor(user, done) {
     this.user = user;
-    this.logger = logger.console();
     this.done = done || false;
     this.room = this.user.room;
   }
@@ -33,7 +33,6 @@ class TextMessage extends Message {
    */
   constructor(user, text, id) {
     super(user);
-    this.logger = logger.console();
     this.text = text;
     this.id = id;
   }

@@ -4,6 +4,7 @@ import { Duplex } from "stream";
 import chalk from "chalk";
 import cline from "cline";
 import { log } from "./../src/logger";
+const logger = log();
 
 
 import * as  _require from "./message.js";
@@ -12,7 +13,7 @@ import { Adapter } from "./adapter.js";
 const TextMessage = _require.TextMessage;
 const historySize = 1024;
 const historyPath = ".shell_history";
-const logger = log();
+
 
 /** Shell Adapter concrete class. */
 export class Shell extends Adapter {
@@ -21,8 +22,7 @@ export class Shell extends Adapter {
     super();
 
     this.robot = robot;
-    this.log = logger;
-    this.log.info("Constructing Shell");
+    logger.info("Constructing Shell");
     this.CommandLine = undefined;
   }
 

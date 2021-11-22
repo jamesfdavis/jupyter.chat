@@ -1,6 +1,5 @@
 import { EventEmitter } from "events";
 import { log } from "./../src/logger";
-
 const logger = log();
 
 /** Class abstract EventEmitter representing an Adapter.
@@ -13,7 +12,6 @@ class Adapter extends EventEmitter {
  */
   constructor() {
     super();
-    this.log = logger;
   }
 
   /**
@@ -52,6 +50,7 @@ class Adapter extends EventEmitter {
  * @param  {} message
  */
   receive(message) {
+    logger.trace("adapter", message);
     this.robot.receive(message);
   }
 

@@ -1,6 +1,9 @@
 import * as  _require from "./message.js";
 import { Adapter } from "./adapter.js";
 
+import { log } from "./../src/logger";
+const logger = log();
+
 const TextMessage = _require.TextMessage;
 
 /** Shell Adapter concrete class. */
@@ -35,6 +38,7 @@ export class Jest extends Adapter {
   * Run the instance.
   */
   run() {
+    logger.trace("Adapter.Jest Connected Emit")
     this.emit("connected");
   }
 

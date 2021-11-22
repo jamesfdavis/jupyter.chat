@@ -13,7 +13,7 @@ const TextMessage = _require.TextMessage;
 import { ext as moduleSimple } from "./../scripts/simple.js";
 
 // eslint-disable-next-line no-unused-vars
-describe("Shell Adapter", () => {
+describe.skip("Shell Adapter", () => {
   test("Bot is able to connect to adapter.", (done) => {
     const r = new Robot(Shell);
     r.adapter.once("connected", () => {
@@ -23,7 +23,7 @@ describe("Shell Adapter", () => {
     r.run();
   });
 
-  test.skip("Bot is able to heard a message from adapter.", (done) => {
+  test("Bot is able to heard a message from adapter.", (done) => {
     const r = new Robot(Shell);
     r.adapter.once("connected", () => {
       // Load response module onto bot.

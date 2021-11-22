@@ -3,6 +3,7 @@ import process from "process";
 import { log } from "./logger";
 import { Middleware } from "./middleware.js";
 import { TextMessage } from "./message.js";
+const logger = log();
 
 /** Class that determines actionability of messages from source
  */
@@ -22,7 +23,7 @@ class Listener {
     this.matcher = matcher;
     this.options = options;
     this.callback = callback;
-    this.log = log;
+
 
     if (this.matcher == null) {
       throw new Error("Missing a matcher for Listener");
@@ -67,13 +68,13 @@ class Listener {
     const match = this.matcher(message);
     if (match) {
       if (this.regex) {
-        this.robot.log.debug(`Message '${message}' matched regex /${this.regex}/; listener.options = ${this.options}`);
+        logger.debug(`Message '${message}' matched regex /${this.regex}/; listener.options = ${this.options}`);
       }
 
       // special middleware-like function that always executes the Listener's
       // callback and calls done (never calls 'next')
       const executeListener = (context, done) => {
-        this.robot.log.debug(`Executing listener callback for Message '${message}'`);
+        logger.debug(`Executing listener callback for Message '${message}'`);
         try {
           this.callback(context.response);
         } catch (err) {
