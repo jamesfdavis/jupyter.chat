@@ -1,17 +1,38 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import path from "path";
 
-import { Jest } from "./../src/adapter.jest.js";
 import { Robot } from "./../src/robot.js";
+import { Jest } from "./../src/adapter.jest.js";
+import { log, level } from "./../src/logger";
 
-describe.skip("Jest Shell", function () {
-  test("Check to see if the Jest Adapter loads.", (done) => {
-    const robot = new Robot(Jest);
-    robot.adapter.once("connected", () => {
-      robot.load(path.resolve("./", "scripts"));
-      robot.adapter.incoming("Badger");
+const logger = log(level.WARN);
+
+import * as  _require from "./../src/message.js";
+const TextMessage = _require.TextMessage;
+
+import { ext } from "./../scripts/simple.js";
+
+// eslint-disable-next-line no-unused-vars
+describe("Jest (Testing Framework) Adapter", () => {
+  test("Bot is able to connect to adapter.", (done) => {
+    const r = new Robot(Jest);
+    r.adapter.once("connected", () => {
+      r.shutdown();
       done();
     });
-    robot.run();
+    r.run();
+  });
+
+  test("Bot is able to heard a message from adapter.", (done) => {
+    const r = new Robot(Jest);
+    r.adapter.once("connected", () => {
+      // Load response module onto bot.
+      r.load(ext);
+      let user = { name: "User", room: "Shell" };
+      r.adapter.receive(new TextMessage(user, "Badger", "messageId"));
+      r.shutdown();
+      done();
+    });
+    r.run();
   });
 });

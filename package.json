@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch --rootDir=.",
+    "test": "jest  --watchAll  --rootDir=.",
     "dev": "nodemon index.ts",
     "jsdoc": "jsdoc -d ./docs/ src/*.js",
     "help": "ts-node index.ts --help",

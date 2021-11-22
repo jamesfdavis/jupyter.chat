@@ -6,7 +6,7 @@ import { Shell } from "./../src/adapter.shell.js";
 
 jest.mock("./../src/adapter.js");
 
-describe.skip("Adapter", function () {
+describe("Adapter Class", function () {
   beforeEach(function () {
     Adapter.mockClear();
   });

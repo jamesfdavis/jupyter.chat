@@ -1,5 +1,7 @@
 import { EventEmitter } from "events";
-import logger from "tracer";
+import { log } from "./../src/logger";
+
+const logger = log();
 
 /** Class abstract EventEmitter representing an Adapter.
  * An adapter is a specific interface to a chat source for robots.
@@ -11,7 +13,7 @@ class Adapter extends EventEmitter {
  */
   constructor() {
     super();
-    this.logger = logger.console();
+    this.log = logger;
   }
 
   /**

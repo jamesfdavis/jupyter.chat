@@ -3,13 +3,16 @@ import * as readline from "readline";
 import { Duplex } from "stream";
 import chalk from "chalk";
 import cline from "cline";
-import logger from "tracer";
+import { log } from "./../src/logger";
+
+
 import * as  _require from "./message.js";
 import { Adapter } from "./adapter.js";
 
 const TextMessage = _require.TextMessage;
 const historySize = 1024;
 const historyPath = ".shell_history";
+const logger = log();
 
 /** Shell Adapter concrete class. */
 export class Shell extends Adapter {
@@ -18,9 +21,8 @@ export class Shell extends Adapter {
     super();
 
     this.robot = robot;
-    this.logger = logger.console();
-
-    this.logger.info("Constructing Shell");
+    this.log = logger;
+    this.log.info("Constructing Shell");
     this.CommandLine = undefined;
   }
 
@@ -51,7 +53,7 @@ export class Shell extends Adapter {
 
     loadHistory((error, history) => {
       if (error) {
-        console.Logger(error.message);
+        console.log(error.message);
       } else {
         this.CommandLine.history(history);
       }
@@ -80,7 +82,7 @@ export class Shell extends Adapter {
     });
 
     this.CommandLine.command("history", () => {
-      Array.from(this.CommandLine.history()).map(item => console.Logger(item));
+      Array.from(this.CommandLine.history()).map(item => console.log(item));
     });
 
     this.CommandLine.on("history", (item) => {
