@@ -67,9 +67,7 @@ class Listener {
 
     const match = this.matcher(message);
     if (match) {
-      if (this.regex)
-        logger.trace(`Message '${message}' matched regex /${this.regex}/; listener.options = ${this.options}`);
-
+      logger.trace(`Message '${message}' matched regex /${this.regex}/; listener.options = ${this.options}`);
 
       // special middleware-like function that always executes the Listener's
       // callback and calls done (never calls 'next')

@@ -10,9 +10,10 @@ const logger = log(level.TRACE);
 import * as  _require from "./../src/message.js";
 const TextMessage = _require.TextMessage;
 
-import { ext } from "./../scripts/simple.js";
+import { basic } from "./scripts/basic.js";
+import { duphear } from "./scripts/duphear.js";
 
-describe.skip("Jest (Testing Framework) Adapter", () => {
+describe("Jest (Testing Framework) Adapter", () => {
 
   test("Bot is able to connect to adapter.", (done) => {
     const r = new Robot(Jest);
@@ -28,7 +29,7 @@ describe.skip("Jest (Testing Framework) Adapter", () => {
 
     r.adapter.once("connected", () => {
       // Load response module onto Bot.
-      r.load({ module: ext, name: "Simple.js" });
+      r.load({ module: basic, name: "Simple.js" });
       let user = { name: "User", room: "Jest" };
       // Send a message to the Bot.
       r.adapter.receive(new TextMessage(user, "Badger", "messageId"));
@@ -43,13 +44,12 @@ describe.skip("Jest (Testing Framework) Adapter", () => {
     r.run();
   });
 
-
   test("Bot is able RESPOND to a message from the adapter and return a response.", (done) => {
     const r = new Robot(Jest);
 
     r.adapter.once("connected", () => {
       // Load response module onto Bot.
-      r.load({ module: ext, name: "Simple.js" });
+      r.load({ module: basic, name: "Simple.js" });
       let user = { name: "User", room: "Jest" };
       // Send a message to the Bot.
       r.adapter.receive(new TextMessage(user, "jupyter: open the pod bay doors", "messageId"));
@@ -64,6 +64,25 @@ describe.skip("Jest (Testing Framework) Adapter", () => {
     r.run();
   });
 
+  test("Bot should skip over duplicate hear regex qualifiers.", (done) => {
+    const r = new Robot(Jest);
 
+    r.adapter.once("connected", () => {
+      // Load response module onto Bot.
+      r.load({ module: duphear, name: "Simple.js" });
+      let user = { name: "User", room: "Jest" };
+      // Send a message to the Bot.
+      r.adapter.receive(new TextMessage(user, "badger", "messageId"));
+    });
+
+    // Listen for a response from the Bot.
+    r.adapter.on("send", (message) => {
+      expect(message.length).toBeGreaterThan(10);
+      done();
+    });
+
+    r.run();
+
+  });
 
 });

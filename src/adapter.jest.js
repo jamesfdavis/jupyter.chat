@@ -45,7 +45,7 @@ export class Jest extends Adapter {
   }
 
   /**
-   * Build and the interface
+   * Build incoming message.
    */
   incoming(message) {
     // const userName = process.env.JUPYTER_SHELL_USER_NAME || "Shell";

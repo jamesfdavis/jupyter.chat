@@ -1,4 +1,4 @@
-let ext = (robot) => {
+let basic = (robot) => {
 
   robot.respond(/open the pod bay doors/i, function (res) {
     return res.reply("I'm afraid I can't let you do that.");
@@ -11,4 +11,4 @@ let ext = (robot) => {
 
 };
 
-export { ext };
+export { basic };

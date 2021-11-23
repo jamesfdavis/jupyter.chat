@@ -90,7 +90,11 @@ export class Robot {
    * @param  {} callback - A Function that is called with a Response object.
    */
   hear(regex, options, callback) {
-    this.listeners.push(new TextListener(this, regex, options, callback));
+    if (this.listeners.filter((l) => l.regex.toString() === regex.toString()).length === 0) {
+      this.listeners.push(new TextListener(this, regex, options, callback));
+    } else {
+      logger.warn(`Failed to add listener for ${regex}, one already exists.`)
+    }
   }
 
   /**
@@ -112,6 +116,7 @@ export class Robot {
   respondPattern(regex) {
     const regexWithoutModifiers = regex.toString().split("/");
     regexWithoutModifiers.shift();
+
     const modifiers = regexWithoutModifiers.pop();
     const regexStartsWithAnchor = regexWithoutModifiers[0] && regexWithoutModifiers[0][0] === "^";
     const pattern = regexWithoutModifiers.join("/");
@@ -122,10 +127,8 @@ export class Robot {
       logger.warning(`The regex in question was ${regex.toString()}`);
     }
 
-    // @jupyter: some stuff
-    if (!this.alias) {
+    if (!this.alias)
       return new RegExp("^[ ]*[@]?" + name + "[:,]?[ ]*(?:" + pattern + ")", modifiers);
-    }
 
     const alias = this.alias.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 

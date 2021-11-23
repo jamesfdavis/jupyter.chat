@@ -38,7 +38,6 @@ function log(lvl) {
     preprocess: function (data) {
       data.title = data.title.toUpperCase();
     },
-
   };
 
   if (process.env.NODE_ENV === "test") {
@@ -51,9 +50,7 @@ function log(lvl) {
         .write(data.rawoutput + "\n");
     };
   }
-
   return logger.colorConsole(config);
-
 }
 
 export { log, level };
