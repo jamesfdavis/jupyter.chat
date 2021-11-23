@@ -34,6 +34,7 @@ export class Shell extends Adapter {
   send(envelope) {
     const strings = [].slice.call(arguments, 1);
     Array.from(strings).forEach(str => console.log(chalk.green`${str}`));
+    this.emit("send");
   }
 
   /**

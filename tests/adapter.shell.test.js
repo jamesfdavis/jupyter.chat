@@ -32,6 +32,9 @@ describe("Shell Adapter", () => {
       let user = { name: "User", room: "Shell" };
       r.adapter.receive(new TextMessage(user, "Badger", "messageId"));
       r.shutdown();
+    });
+    // Listen for a response from the Bot.
+    r.adapter.on("send", (message) => {
       done();
     });
     r.run();

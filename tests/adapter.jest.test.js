@@ -12,7 +12,7 @@ const TextMessage = _require.TextMessage;
 
 import { ext } from "./../scripts/simple.js";
 
-describe("Jest (Testing Framework) Adapter", () => {
+describe.skip("Jest (Testing Framework) Adapter", () => {
 
   test("Bot is able to connect to adapter.", (done) => {
     const r = new Robot(Jest);
