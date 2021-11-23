@@ -14,6 +14,8 @@ prev-build
 .shell_history
 docs
 
+# Mac OS X folder info
+.DS_Store
 
 # Runtime data
 pids
