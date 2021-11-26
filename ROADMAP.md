@@ -23,5 +23,7 @@ This roadmap represents some of the priorities for the project over the next few
 - [x] Build a test for happens when two extensions have the same regex signature.
 
 
-## Generate example worflows.
+## Generate Dialog worflows.
 
+- [ ] Establish a basic document structure for an Obsidian that matches DialogFlow CX.
+ 

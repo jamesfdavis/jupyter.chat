@@ -93,7 +93,7 @@ export class Robot {
     if (this.listeners.filter((l) => l.regex.toString() === regex.toString()).length === 0) {
       this.listeners.push(new TextListener(this, regex, options, callback));
     } else {
-      logger.warn(`Failed to add listener for ${regex}, one already exists.`)
+      logger.warn(`Failed to add listener for ${regex}, one already exists.`);
     }
   }
 
